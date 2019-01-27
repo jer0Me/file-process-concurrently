@@ -1,4 +1,5 @@
 import models.Event;
+import models.EventAlert;
 
 public class EventProcessor {
 

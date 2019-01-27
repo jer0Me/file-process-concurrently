@@ -1,4 +1,5 @@
 import models.Event;
+import models.EventAlert;
 import models.EventLog;
 import models.EventLogState;
 import org.junit.Before;
