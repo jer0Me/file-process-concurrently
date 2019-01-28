@@ -17,4 +17,15 @@ public class Event {
     public EventLog getFinishedEventLog() {
         return finishedEventLog;
     }
+
+    public String getEventId() {
+        if (startedEventLog != null) {
+            return startedEventLog.getId();
+        }
+
+        if (finishedEventLog != null) {
+            return finishedEventLog.getId();
+        }
+        return "";
+    }
 }
