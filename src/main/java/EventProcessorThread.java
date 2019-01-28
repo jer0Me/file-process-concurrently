@@ -32,7 +32,7 @@ public class EventProcessorThread implements Runnable {
     }
 
     private void processNextEventLogFromTheQueue() throws InterruptedException {
-        while(!eventProcessed) {
+        while (!eventProcessed) {
 
             EventLog eventLog = eventLogQueue.take();
 
@@ -65,11 +65,8 @@ public class EventProcessorThread implements Runnable {
         }
     }
 
-
     private Boolean doesLastEvengLogBelongToTheSameEventAsTheFirstEventLog(EventLog lastEventLog) {
         return firstEventLog.getId().equals(lastEventLog.getId());
     }
-
-
 
 }
