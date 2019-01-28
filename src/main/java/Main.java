@@ -1,6 +1,8 @@
+
 public class Main {
 
     public static void main(String[] vars) {
-        System.out.println("test");
+        String filePath = vars[0];
+        new EventLogsFileProcessor(4).processEventLogsFile(filePath);
     }
 }

@@ -1,27 +1,44 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class EventLog {
 
     private final String id;
     private final EventLogState state;
     private final Long timestamp;
-    private final EventLogType type;
-    private final String hostname;
 
-    public EventLog(String id, EventLogState state, Long timestamp, EventLogType type, String hostname) {
+    @JsonIgnoreProperties
+    private final EventLogType type;
+
+    @JsonIgnoreProperties
+    private final String host;
+
+    @JsonCreator
+    public EventLog(@JsonProperty("id") String id,
+                    @JsonProperty("state") EventLogState state,
+                    @JsonProperty("timestamp") Long timestamp,
+                    @JsonProperty("type") EventLogType type,
+                    @JsonProperty("host") String host) {
+
         this.id = id;
         this.state = state;
         this.timestamp = timestamp;
         this.type = type;
-        this.hostname = hostname;
+        this.host = host;
     }
 
-    public EventLog(String id, EventLogState state, Long timestamp) {
+    public EventLog(String id,
+                    EventLogState state,
+                    Long timestamp) {
+
         this.id = id;
         this.state = state;
         this.timestamp = timestamp;
         this.type = null;
-        this.hostname = null;
+        this.host = null;
     }
 
     public String getId() {
@@ -40,7 +57,7 @@ public class EventLog {
         return type;
     }
 
-    public String getHostname() {
-        return hostname;
+    public String getHost() {
+        return host;
     }
 }
