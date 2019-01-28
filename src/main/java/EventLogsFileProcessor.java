@@ -16,6 +16,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.CompletableFuture;
 
 public class EventLogsFileProcessor {
 
@@ -81,7 +82,11 @@ public class EventLogsFileProcessor {
 
         eventLogBlockingQueues.put(eventLog.getId(), eventLogBlockingQueue);
 
-        executorService.submit(eventProcessorThread);
+        CompletableFuture.runAsync(eventProcessorThread, executorService).exceptionally(e -> {
+            logger.error ("There was en error processing log for the event -> id: "
+                    + eventLog.getId() + " state: " + eventLog.getState().name());
+            return null;
+        });
 
         logger.debug("Created new thread for an Event -> Id: " + eventLog.getId());
     }
