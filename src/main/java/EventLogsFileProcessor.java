@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import models.EventLog;
+import models.EventParameters;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.slf4j.Logger;
@@ -26,16 +27,19 @@ public class EventLogsFileProcessor {
 
     private ExecutorService executorService;
 
-    public EventLogsFileProcessor(Integer numberOfThreads) {
+    private EventParameters eventParameters;
+
+    public EventLogsFileProcessor(EventParameters eventParameters) {
+        this.eventParameters = eventParameters;
         eventLogBlockingQueues = new HashMap<>();
         eventProcessor = new EventProcessor(new EventValidator(), new EventDao());
         objectMapper = new ObjectMapper();
-        executorService = Executors.newFixedThreadPool(numberOfThreads);
+        executorService = Executors.newFixedThreadPool(eventParameters.getNumberOfThreads());
     }
 
-    public void processEventLogsFile(String filePath) {
+    public void processEventLogsFile() {
         try {
-            doProcessEventLogsFile(filePath);
+            doProcessEventLogsFile(eventParameters.getFilePath());
         } catch (IOException e) {
             e.printStackTrace();
         }
