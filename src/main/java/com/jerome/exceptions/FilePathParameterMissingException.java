@@ -1,4 +1,4 @@
-package exceptions;
+package com.jerome.exceptions;
 
 public class FilePathParameterMissingException extends RuntimeException {
 

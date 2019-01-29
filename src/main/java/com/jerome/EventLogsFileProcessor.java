@@ -1,9 +1,11 @@
+package com.jerome;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import exceptions.ProcessingEventException;
-import models.Event;
-import models.EventLog;
-import models.EventLogState;
-import models.EventParameters;
+import com.jerome.exceptions.ProcessingEventException;
+import com.jerome.models.Event;
+import com.jerome.models.EventLog;
+import com.jerome.models.EventLogState;
+import com.jerome.models.EventParameters;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.slf4j.Logger;
@@ -19,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class EventLogsFileProcessor {
+class EventLogsFileProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(EventLogsFileProcessor.class);
 
@@ -31,14 +33,14 @@ public class EventLogsFileProcessor {
 
     private EventParameters eventParameters;
 
-    public EventLogsFileProcessor(EventParameters eventParameters) {
+    EventLogsFileProcessor(EventParameters eventParameters) {
         this.eventParameters = eventParameters;
         eventLogsMap = new HashMap<>();
         eventProcessor = new EventProcessor(new EventValidator(), new EventDao());
         objectMapper = new ObjectMapper();
     }
 
-    public void processEventLogsFile() {
+    void processEventLogsFile() {
         try {
             executorService = Executors.newFixedThreadPool(eventParameters.getNumberOfThreads());
             doProcessEventLogsFile(eventParameters.getFilePath());
@@ -96,8 +98,8 @@ public class EventLogsFileProcessor {
                     removeFirstEventLogPreviouslySaved(lastEventLog);
                 }
         , executorService).exceptionally(exception -> {
-            logger.error("There was an error processing the Event: {}", lastEventLog.getId(), exception);
-            throw new ProcessingEventException();
+            logger.error("There was an error processing the Event: {}", lastEventLog.getId());
+            throw new ProcessingEventException(exception);
         });
     }
 
@@ -119,5 +121,4 @@ public class EventLogsFileProcessor {
             return Optional.empty();
         }
     }
-
 }

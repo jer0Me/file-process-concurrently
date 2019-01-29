@@ -1,9 +1,8 @@
-import exceptions.FilePathParameterMissingException;
+package com.jerome;
 
 public class Main {
 
-    public static void main(String... vars) throws FilePathParameterMissingException {
-
+    public static void main(String... vars) {
         new EventLogsFileProcessor(
                 new EventParametersValidator(vars).getEventParameters()
 

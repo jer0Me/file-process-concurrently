@@ -1,7 +1,9 @@
-import models.Event;
-import models.EventAlert;
-import models.EventLog;
-import models.EventLogState;
+package com.jerome;
+
+import com.jerome.models.Event;
+import com.jerome.models.EventAlert;
+import com.jerome.models.EventLog;
+import com.jerome.models.EventLogState;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,9 +39,9 @@ public class EventProcessorTest {
     @Test
     public void shouldSaveEventToTheDatabaseIfTheEventIsAnAlert() {
         String eventName = "scsmbstgrc";
-        Long startEvent = 1491377495210L;
-        Long finishEvent = 1491377495218L;
-        Long duration = finishEvent - startEvent;
+        long startEvent = 1491377495210L;
+        long finishEvent = 1491377495218L;
+        long duration = finishEvent - startEvent;
 
         Event event = new Event(
                 new EventLog(eventName, EventLogState.STARTED, startEvent),

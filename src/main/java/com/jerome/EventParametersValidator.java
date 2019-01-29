@@ -1,11 +1,13 @@
-import exceptions.FilePathParameterMissingException;
-import models.EventParameters;
+package com.jerome;
+
+import com.jerome.exceptions.FilePathParameterMissingException;
+import com.jerome.models.EventParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventParametersValidator {
+class EventParametersValidator {
 
-    public static final Integer DEFAULT_THREAD_POOL_SIZE = 1;
+    static final Integer DEFAULT_THREAD_POOL_SIZE = 1;
 
     private static final Logger logger = LoggerFactory.getLogger(EventParametersValidator.class);
 
@@ -14,11 +16,11 @@ public class EventParametersValidator {
 
     private final String[] vars;
 
-    public EventParametersValidator(String... vars) {
+    EventParametersValidator(String... vars) {
         this.vars = vars.clone();
     }
 
-    public EventParameters getEventParameters() {
+    EventParameters getEventParameters() {
         return new EventParameters(getFilePath(), getNumberOfThreadsParameter());
     }
 

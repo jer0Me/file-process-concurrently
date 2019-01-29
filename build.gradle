@@ -1,4 +1,4 @@
-group 'com.test'
+group 'com.jerome'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'

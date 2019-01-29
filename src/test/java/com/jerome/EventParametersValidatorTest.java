@@ -1,4 +1,6 @@
-import exceptions.FilePathParameterMissingException;
+package com.jerome;
+
+import com.jerome.exceptions.FilePathParameterMissingException;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
@@ -9,7 +11,7 @@ public class EventParametersValidatorTest {
     public void shouldUseThreadPoolSizePassedAsParameter() {
         String[] vars = {"file", "2"};
         EventParametersValidator eventParametersValidator = new EventParametersValidator(vars);
-        assertEquals(new Integer(2), eventParametersValidator.getEventParameters().getNumberOfThreads());
+        assertEquals(Integer.valueOf(2), eventParametersValidator.getEventParameters().getNumberOfThreads());
     }
 
     @Test

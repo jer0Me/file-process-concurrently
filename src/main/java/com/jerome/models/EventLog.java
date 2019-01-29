@@ -1,4 +1,4 @@
-package models;
+package com.jerome.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -37,8 +37,8 @@ public class EventLog {
         this.id = id;
         this.state = state;
         this.timestamp = timestamp;
-        this.type = null;
-        this.host = null;
+        this.type = EventLogType.UNKNOWN;
+        this.host = "";
     }
 
     public String getId() {

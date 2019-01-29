@@ -1,5 +1,7 @@
-import models.EventLog;
-import models.EventParameters;
+package com.jerome;
+
+import com.jerome.models.EventLog;
+import com.jerome.models.EventParameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -46,7 +48,7 @@ public class EventLogsFileProcessorTest {
         EventProcessor eventProcessor = mock(EventProcessor.class);
         whenNew(EventProcessor.class).withAnyArguments().thenReturn(eventProcessor);
         EventLogsFileProcessor eventLogsFileProcessor = new EventLogsFileProcessor(
-                buildEventParameters("two_Event_logs_of_same_event.txt")
+                buildEventParameters("two_event_logs_of_same_event.txt")
         );
         eventLogsFileProcessor.processEventLogsFile();
         verify(eventProcessor).processEvent(any());
