@@ -1,6 +1,5 @@
 package com.jerome;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jerome.exceptions.ProcessingEventException;
 import com.jerome.models.Event;
 import com.jerome.models.EventLog;
@@ -26,18 +25,16 @@ class EventLogsFileProcessor {
     private static final Logger logger = LoggerFactory.getLogger(EventLogsFileProcessor.class);
 
     private EventProcessor eventProcessor;
+    private EventLogMapper eventLogMapper;
     private Map<String, EventLog> eventLogsMap;
-    private ObjectMapper objectMapper;
-
     private ExecutorService executorService;
-
     private EventParameters eventParameters;
 
     EventLogsFileProcessor(EventParameters eventParameters) {
         this.eventParameters = eventParameters;
         eventLogsMap = new HashMap<>();
         eventProcessor = new EventProcessor(new EventValidator(), new EventDao());
-        objectMapper = new ObjectMapper();
+        eventLogMapper = new EventLogMapper();
     }
 
     void processEventLogsFile() {
@@ -59,7 +56,7 @@ class EventLogsFileProcessor {
     }
 
     private void processEventLogLine(String eventLogLine) {
-        Optional<EventLog> eventLogOptional = mapEventLogLineToEventLogObject(eventLogLine);
+        Optional<EventLog> eventLogOptional = eventLogMapper.mapEventLogLineToEventLogObject(eventLogLine);
         eventLogOptional.ifPresent(this::processEventLog);
     }
 
@@ -111,14 +108,4 @@ class EventLogsFileProcessor {
         return eventLogsMap.containsKey(eventId);
     }
 
-    private Optional<EventLog> mapEventLogLineToEventLogObject(String eventLogLine) {
-        try {
-            return Optional.of(
-                    objectMapper.readValue(eventLogLine, EventLog.class)
-            );
-        } catch (IOException e) {
-            logger.error("There was an error mapping the event log line: {}", eventLogLine, e);
-            return Optional.empty();
-        }
-    }
 }
