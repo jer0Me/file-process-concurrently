@@ -1,5 +1,8 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
+import exceptions.ProcessingEventException;
+import models.Event;
 import models.EventLog;
+import models.EventLogState;
 import models.EventParameters;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
@@ -12,18 +15,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.CompletableFuture;
 
 public class EventLogsFileProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(EventLogsFileProcessor.class);
 
     private EventProcessor eventProcessor;
-    private Map<String, BlockingQueue<EventLog>> eventLogBlockingQueues;
+    private Map<String, EventLog> eventLogsMap;
     private ObjectMapper objectMapper;
 
     private ExecutorService executorService;
@@ -32,15 +33,16 @@ public class EventLogsFileProcessor {
 
     public EventLogsFileProcessor(EventParameters eventParameters) {
         this.eventParameters = eventParameters;
-        eventLogBlockingQueues = new HashMap<>();
+        eventLogsMap = new HashMap<>();
         eventProcessor = new EventProcessor(new EventValidator(), new EventDao());
         objectMapper = new ObjectMapper();
-        executorService = Executors.newFixedThreadPool(eventParameters.getNumberOfThreads());
     }
 
     public void processEventLogsFile() {
         try {
+            executorService = Executors.newFixedThreadPool(eventParameters.getNumberOfThreads());
             doProcessEventLogsFile(eventParameters.getFilePath());
+            executorService.shutdown();
         } catch (IOException e) {
             logger.error("There was an error processing event logs file", e);
         }
@@ -52,7 +54,6 @@ public class EventLogsFileProcessor {
                 processEventLogLine(it.nextLine());
             }
         }
-        executorService.shutdown();
     }
 
     private void processEventLogLine(String eventLogLine) {
@@ -61,47 +62,51 @@ public class EventLogsFileProcessor {
     }
 
     private void processEventLog(EventLog eventLog) {
-        if(logger.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             logger.debug("Processing new EventLog -> Event Id: {}, State: {}",
                     eventLog.getId(),
                     eventLog.getState().name()
             );
         }
 
-        if (!alreadyExistEventProcessorThreadForThisEvent(eventLog.getId())) {
-            createNewEventProcessorThread(eventLog);
+        if (hasFirstLogForThisEventAlreadyArrived(eventLog.getId())) {
+            processEvent(eventLog);
+        } else {
+            saveFirstEventLogUntilTheLastEventLogArrives(eventLog);
         }
-        sendEventLogToTheEventProcessorThread(eventLog);
     }
 
-    private boolean alreadyExistEventProcessorThreadForThisEvent(String eventId) {
-        return eventLogBlockingQueues.containsKey(eventId);
+    private void saveFirstEventLogUntilTheLastEventLogArrives(EventLog eventLog) {
+        eventLogsMap.put(eventLog.getId(), eventLog);
     }
 
-    private void createNewEventProcessorThread(EventLog eventLog) {
-        BlockingQueue<EventLog> eventLogBlockingQueue = new LinkedBlockingQueue<>();
+    private void processEvent(EventLog lastEventLog) {
+        CompletableFuture.runAsync(() -> {
+                    logger.debug("Processing Event -> id: {}", lastEventLog.getId());
 
-        EventProcessorThread eventProcessorThread = new EventProcessorThread(eventLogBlockingQueue, eventProcessor);
-
-        eventLogBlockingQueues.put(eventLog.getId(), eventLogBlockingQueue);
-
-        CompletableFuture.runAsync(eventProcessorThread, executorService).exceptionally(e -> {
-            logger.error ("There was en error processing log for the event -> id: {} state: {}" ,
-                    eventLog.getId(),
-                    eventLog.getState().name()
-            );
-            return null;
+                    if (lastEventLog.getState().equals(EventLogState.STARTED)) {
+                        eventProcessor.processEvent(
+                                new Event(lastEventLog, eventLogsMap.get(lastEventLog.getId()))
+                        );
+                    } else {
+                        eventProcessor.processEvent(
+                                new Event(eventLogsMap.get(lastEventLog.getId()), lastEventLog)
+                        );
+                    }
+                    removeFirstEventLogPreviouslySaved(lastEventLog);
+                }
+        , executorService).exceptionally(exception -> {
+            logger.error("There was an error processing the Event: {}", lastEventLog.getId(), exception);
+            throw new ProcessingEventException();
         });
-
-        logger.debug("Created new thread for an Event -> Id: {}", eventLog.getId());
     }
 
-    private void sendEventLogToTheEventProcessorThread(EventLog eventLog) {
-        try {
-            eventLogBlockingQueues.get(eventLog.getId()).put(eventLog);
-        } catch (InterruptedException e) {
-            logger.error("There was an error processing the Event: {}", eventLog.getId(), e);
-        }
+    private void removeFirstEventLogPreviouslySaved(EventLog lastEventLog) {
+        eventLogsMap.remove(lastEventLog.getId());
+    }
+
+    private boolean hasFirstLogForThisEventAlreadyArrived(String eventId) {
+        return eventLogsMap.containsKey(eventId);
     }
 
     private Optional<EventLog> mapEventLogLineToEventLogObject(String eventLogLine) {
