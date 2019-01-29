@@ -2,7 +2,7 @@ package exceptions;
 
 public class FilePathParameterMissingException extends RuntimeException {
 
-    public FilePathParameterMissingException() {
-        super("File path parameter is missing");
+    public FilePathParameterMissingException(Throwable cause) {
+        super("File path parameter is missing", cause);
     }
 }

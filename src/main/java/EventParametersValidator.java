@@ -14,8 +14,8 @@ public class EventParametersValidator {
 
     private final String[] vars;
 
-    public EventParametersValidator(String[] vars) {
-        this.vars = vars;
+    public EventParametersValidator(String... vars) {
+        this.vars = vars.clone();
     }
 
     public EventParameters getEventParameters() {
@@ -26,7 +26,7 @@ public class EventParametersValidator {
         try {
             return vars[FILE_PATH_PARAMETER_INDEX];
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new FilePathParameterMissingException();
+            throw new FilePathParameterMissingException(e);
         }
     }
 
@@ -34,11 +34,11 @@ public class EventParametersValidator {
         try {
             return Integer.valueOf(vars[NUMBER_OF_THREADS_PARAMETER_INDEX]);
         } catch (NumberFormatException e) {
-            logger.info(vars[NUMBER_OF_THREADS_PARAMETER_INDEX] + " should be a number");
-            logger.info("Using Default thread pool size: " + DEFAULT_THREAD_POOL_SIZE);
+            logger.info("{} should be a number", vars[NUMBER_OF_THREADS_PARAMETER_INDEX]);
+            logger.info("Using Default thread pool size: {}", DEFAULT_THREAD_POOL_SIZE);
             return DEFAULT_THREAD_POOL_SIZE;
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.info("Default thread pool size: " + DEFAULT_THREAD_POOL_SIZE);
+            logger.info("Default thread pool size: {}", DEFAULT_THREAD_POOL_SIZE);
             return DEFAULT_THREAD_POOL_SIZE;
         }
     }

@@ -24,7 +24,7 @@ public class EventProcessor {
                             Boolean.TRUE
                     )
             );
-            logger.info("Event: " + event.getEventId() + " flagged as an Alert");
+            logger.info("Event: {} flagged as an Alert", event.getEventId());
         }
 
     }

@@ -47,7 +47,7 @@ public class EventProcessorThread implements Runnable {
     private void processEventLog(EventLog lastEventLog) {
         if (doesLastEvengLogBelongToTheSameEventAsTheFirstEventLog(lastEventLog)) {
 
-            logger.debug("Processing Event -> Id: " + firstEventLog.getId());
+            logger.debug("Processing Event -> Id: {}", firstEventLog.getId());
 
             if (lastEventLog.getState().equals(EventLogState.STARTED)) {
                 eventProcessor.processEvent(
@@ -61,7 +61,7 @@ public class EventProcessorThread implements Runnable {
 
             eventProcessed = Boolean.TRUE;
 
-            logger.debug("Event -> id: " + lastEventLog.getId() + " processed");
+            logger.debug("Event -> id: {} processed", lastEventLog.getId());
         }
     }
 

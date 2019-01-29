@@ -42,7 +42,7 @@ public class EventLogsFileProcessor {
         try {
             doProcessEventLogsFile(eventParameters.getFilePath());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("There was an error processing event logs file", e);
         }
     }
 
@@ -61,9 +61,12 @@ public class EventLogsFileProcessor {
     }
 
     private void processEventLog(EventLog eventLog) {
-        logger.debug("Processing new EventLog -> Event Id: " + eventLog.getId() + ", State: "
-                + eventLog.getState().name()
-        );
+        if(logger.isDebugEnabled()) {
+            logger.debug("Processing new EventLog -> Event Id: {}, State: {}",
+                    eventLog.getId(),
+                    eventLog.getState().name()
+            );
+        }
 
         if (!alreadyExistEventProcessorThreadForThisEvent(eventLog.getId())) {
             createNewEventProcessorThread(eventLog);
@@ -83,19 +86,21 @@ public class EventLogsFileProcessor {
         eventLogBlockingQueues.put(eventLog.getId(), eventLogBlockingQueue);
 
         CompletableFuture.runAsync(eventProcessorThread, executorService).exceptionally(e -> {
-            logger.error ("There was en error processing log for the event -> id: "
-                    + eventLog.getId() + " state: " + eventLog.getState().name());
+            logger.error ("There was en error processing log for the event -> id: {} state: {}" ,
+                    eventLog.getId(),
+                    eventLog.getState().name()
+            );
             return null;
         });
 
-        logger.debug("Created new thread for an Event -> Id: " + eventLog.getId());
+        logger.debug("Created new thread for an Event -> Id: {}", eventLog.getId());
     }
 
     private void sendEventLogToTheEventProcessorThread(EventLog eventLog) {
         try {
             eventLogBlockingQueues.get(eventLog.getId()).put(eventLog);
         } catch (InterruptedException e) {
-            logger.error("There was an error processing the Event: " + eventLog.getId(), e);
+            logger.error("There was an error processing the Event: {}", eventLog.getId(), e);
         }
     }
 
@@ -105,7 +110,7 @@ public class EventLogsFileProcessor {
                     objectMapper.readValue(eventLogLine, EventLog.class)
             );
         } catch (IOException e) {
-            logger.error("There was an error mapping the event log line: " + eventLogLine, e);
+            logger.error("There was an error mapping the event log line: {}", eventLogLine, e);
             return Optional.empty();
         }
     }
