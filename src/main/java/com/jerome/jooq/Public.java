@@ -4,7 +4,7 @@
 package com.jerome.jooq;
 
 
-import com.jerome.jooq.tables.Events;
+import com.jerome.jooq.tables.EventAlert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 198395039;
+    private static final long serialVersionUID = -1222657605;
 
     /**
      * The reference instance of <code>PUBLIC</code>
@@ -38,9 +38,9 @@ public class Public extends SchemaImpl {
     public static final Public PUBLIC = new Public();
 
     /**
-     * The table <code>PUBLIC.EVENTS</code>.
+     * The table <code>PUBLIC.EVENT_ALERT</code>.
      */
-    public final Events EVENTS = com.jerome.jooq.tables.Events.EVENTS;
+    public final EventAlert EVENT_ALERT = com.jerome.jooq.tables.EventAlert.EVENT_ALERT;
 
     /**
      * No further instances allowed
@@ -67,6 +67,6 @@ public class Public extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
-            Events.EVENTS);
+            EventAlert.EVENT_ALERT);
     }
 }

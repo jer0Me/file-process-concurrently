@@ -4,7 +4,7 @@
 package com.jerome.jooq;
 
 
-import com.jerome.jooq.tables.Events;
+import com.jerome.jooq.tables.EventAlert;
 
 import javax.annotation.Generated;
 
@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
-     * The table <code>PUBLIC.EVENTS</code>.
+     * The table <code>PUBLIC.EVENT_ALERT</code>.
      */
-    public static final Events EVENTS = com.jerome.jooq.tables.Events.EVENTS;
+    public static final EventAlert EVENT_ALERT = com.jerome.jooq.tables.EventAlert.EVENT_ALERT;
 }

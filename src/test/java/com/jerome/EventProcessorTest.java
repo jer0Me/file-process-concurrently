@@ -22,7 +22,7 @@ import static org.mockito.Mockito.any;
 @RunWith(MockitoJUnitRunner.class)
 public class EventProcessorTest {
 
-    private EventDao eventDao;
+    private EventAlertDao eventAlertDao;
     private EventValidator eventValidator;
     private EventProcessor eventProcessor;
 
@@ -31,9 +31,9 @@ public class EventProcessorTest {
 
     @Before
     public void setUp() {
-        eventDao = mock(EventDao.class);
+        eventAlertDao = mock(EventAlertDao.class);
         eventValidator = mock(EventValidator.class);
-        eventProcessor = new EventProcessor(eventValidator, eventDao);
+        eventProcessor = new EventProcessor(eventValidator, eventAlertDao);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class EventProcessorTest {
 
         when(eventValidator.isEventDurationLongerThanFourSeconds(event)).thenReturn(Boolean.TRUE);
         eventProcessor.processEvent(event);
-        verify(eventDao).saveEventAlert(eventAlertCaptor.capture());
+        verify(eventAlertDao).saveEventAlert(eventAlertCaptor.capture());
 
         assertEquals(eventName, eventAlertCaptor.getValue().getId());
         assertEquals(duration, eventAlertCaptor.getValue().getDuration(), 0);
@@ -61,7 +61,7 @@ public class EventProcessorTest {
     public void shouldNotSaveAnEventIfItsNotAnAlert() {
         Event event = new Event(null, null);
         when(eventValidator.isEventDurationLongerThanFourSeconds(event)).thenReturn(Boolean.FALSE);
-        verify(eventDao, never()).saveEventAlert(any());
+        verify(eventAlertDao, never()).saveEventAlert(any());
         eventProcessor.processEvent(event);
     }
 }

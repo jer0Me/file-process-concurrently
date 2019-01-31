@@ -14,18 +14,18 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import static com.jerome.jooq.tables.Events.EVENTS;
+import static com.jerome.jooq.tables.EventAlert.EVENT_ALERT;
 
-class EventDao {
+class EventAlertDao {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventAlertDao.class);
     private static final String DATABASE_NAME = "eventsDB";
 
     private HikariDataSource hikariDatasource;
 
-    EventDao() {
+    EventAlertDao() {
         setupHikariConnectionPool();
-        createEventsTableIfNotExist();
+        createEventAlertTableIfNotExist();
     }
 
     void saveEventAlert(EventAlert eventAlert) {
@@ -38,13 +38,13 @@ class EventDao {
     }
 
     private void doSaveEventAlert(DSLContext dslContext, EventAlert eventAlert) {
-        dslContext.insertInto(EVENTS)
-                .set(EVENTS.ID, UUID.randomUUID())
-                .set(EVENTS.EVENT_ID, eventAlert.getId())
-                .set(EVENTS.DURATION, eventAlert.getDuration().intValue())
-                .set(EVENTS.TYPE, eventAlert.getType().name())
-                .set(EVENTS.HOST, eventAlert.getHost())
-                .set(EVENTS.ALERT, eventAlert.getAlert())
+        dslContext.insertInto(EVENT_ALERT)
+                .set(EVENT_ALERT.ID, UUID.randomUUID())
+                .set(EVENT_ALERT.EVENT_ID, eventAlert.getId())
+                .set(EVENT_ALERT.DURATION, eventAlert.getDuration().intValue())
+                .set(EVENT_ALERT.TYPE, eventAlert.getType().name())
+                .set(EVENT_ALERT.HOST, eventAlert.getHost())
+                .set(EVENT_ALERT.ALERT, eventAlert.getAlert())
                 .execute();
     }
 
@@ -61,7 +61,7 @@ class EventDao {
         hikariDatasource = new HikariDataSource(hikariConfig);
     }
 
-    private void createEventsTableIfNotExist() {
+    private void createEventAlertTableIfNotExist() {
         try (Connection connection = hikariDatasource.getConnection()) {
             doCreateEventsTableIfNotExist(DSL.using(connection));
         } catch (SQLException e) {
@@ -71,7 +71,7 @@ class EventDao {
     }
 
     private void doCreateEventsTableIfNotExist(DSLContext dslContext) {
-        dslContext.createTableIfNotExists("EVENTS")
+        dslContext.createTableIfNotExists("EVENT_ALERT")
                 .column("ID", SQLDataType.UUID.nullable(false))
                 .column("EVENT_ID", SQLDataType.VARCHAR(255).nullable(false))
                 .column("DURATION", SQLDataType.INTEGER.nullable(false))
@@ -80,5 +80,4 @@ class EventDao {
                 .column("ALERT", SQLDataType.BOOLEAN.nullable(false))
                 .execute();
     }
-
 }

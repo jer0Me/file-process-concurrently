@@ -35,7 +35,7 @@ class EventLogsFileProcessor {
     EventLogsFileProcessor(EventParameters eventParameters) {
         this.eventParameters = eventParameters;
         eventLogsMap = new HashMap<>();
-        eventProcessor = new EventProcessor(new EventValidator(), new EventDao());
+        eventProcessor = new EventProcessor(new EventValidator(), new EventAlertDao());
         eventLogMapper = new EventLogMapper();
     }
 

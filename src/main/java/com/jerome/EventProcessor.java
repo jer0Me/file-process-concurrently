@@ -10,16 +10,16 @@ class EventProcessor {
     private static final Logger logger = LoggerFactory.getLogger(EventProcessor.class);
 
     private EventValidator eventValidator;
-    private EventDao eventDao;
+    private EventAlertDao eventAlertDao;
 
-    EventProcessor(EventValidator eventValidator, EventDao eventDao) {
+    EventProcessor(EventValidator eventValidator, EventAlertDao eventAlertDao) {
         this.eventValidator = eventValidator;
-        this.eventDao = eventDao;
+        this.eventAlertDao = eventAlertDao;
     }
 
     void processEvent(Event event) {
         if (eventValidator.isEventDurationLongerThanFourSeconds(event)) {
-            eventDao.saveEventAlert(
+            eventAlertDao.saveEventAlert(
                     new EventAlert(
                             event.getStartedEventLog().getId(),
                             event.getFinishedEventLog().getTimestamp() - event.getStartedEventLog().getTimestamp(),
