@@ -3,7 +3,7 @@ package com.jerome;
 import com.jerome.models.Event;
 import com.jerome.models.EventAlert;
 import com.jerome.models.EventLog;
-import com.jerome.models.EventLogState;
+import com.jerome.enums.EventLogState;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

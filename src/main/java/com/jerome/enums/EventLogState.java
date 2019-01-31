@@ -1,4 +1,4 @@
-package com.jerome.models;
+package com.jerome.enums;
 
 public enum EventLogState {
     STARTED,

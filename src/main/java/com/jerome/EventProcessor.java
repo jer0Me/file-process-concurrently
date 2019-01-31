@@ -23,7 +23,9 @@ class EventProcessor {
                     new EventAlert(
                             event.getStartedEventLog().getId(),
                             event.getFinishedEventLog().getTimestamp() - event.getStartedEventLog().getTimestamp(),
-                            Boolean.TRUE
+                            Boolean.TRUE,
+                            event.getFinishedEventLog().getType(),
+                            event.getFinishedEventLog().getHost()
                     )
             );
             logger.debug("Event: {} flagged as an Alert", event.getEventId());

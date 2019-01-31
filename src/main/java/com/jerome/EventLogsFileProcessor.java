@@ -5,7 +5,7 @@ import com.jerome.exceptions.ProcessingEventLogsFileException;
 import com.jerome.exceptions.SleepThreadException;
 import com.jerome.models.Event;
 import com.jerome.models.EventLog;
-import com.jerome.models.EventLogState;
+import com.jerome.enums.EventLogState;
 import com.jerome.models.EventParameters;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
