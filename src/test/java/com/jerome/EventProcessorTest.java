@@ -54,7 +54,7 @@ public class EventProcessorTest {
 
         assertEquals(eventName, eventAlertCaptor.getValue().getId());
         assertEquals(duration, eventAlertCaptor.getValue().getDuration(), 0);
-        assertTrue(eventAlertCaptor.getValue().isAlert());
+        assertTrue(eventAlertCaptor.getValue().getAlert());
     }
 
     @Test
