@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.UUID;
 
 import static com.jerome.jooq.tables.Events.EVENTS;
@@ -30,7 +31,7 @@ class EventDao {
     void saveEventAlert(EventAlert eventAlert) {
         try (Connection connection = hikariDatasource.getConnection()) {
             doSaveEventAlert(DSL.using(connection), eventAlert);
-        } catch (Exception e) {
+        } catch (SQLException e) {
             LOGGER.error("There was an error trying to save an EventAlert", e);
             throw new DatabaseException(e);
         }
@@ -63,7 +64,7 @@ class EventDao {
     private void createEventsTableIfNotExist() {
         try (Connection connection = hikariDatasource.getConnection()) {
             doCreateEventsTableIfNotExist(DSL.using(connection));
-        } catch (Exception e) {
+        } catch (SQLException e) {
             LOGGER.error("There was an error trying to create the Events table", e);
             throw new DatabaseException(e);
         }

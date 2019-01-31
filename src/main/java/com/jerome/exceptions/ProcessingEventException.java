@@ -1,7 +1,7 @@
 package com.jerome.exceptions;
 
 public class ProcessingEventException extends RuntimeException {
-    public ProcessingEventException(Throwable exception) {
-        super(exception);
+    public ProcessingEventException(Throwable e) {
+        super(e);
     }
 }

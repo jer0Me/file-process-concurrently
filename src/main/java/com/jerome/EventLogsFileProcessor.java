@@ -1,6 +1,8 @@
 package com.jerome;
 
 import com.jerome.exceptions.ProcessingEventException;
+import com.jerome.exceptions.ProcessingEventLogsFileException;
+import com.jerome.exceptions.SleepThreadException;
 import com.jerome.models.Event;
 import com.jerome.models.EventLog;
 import com.jerome.models.EventLogState;
@@ -22,7 +24,7 @@ import java.util.concurrent.Executors;
 
 class EventLogsFileProcessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(EventLogsFileProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventLogsFileProcessor.class);
 
     private EventProcessor eventProcessor;
     private EventLogMapper eventLogMapper;
@@ -41,12 +43,22 @@ class EventLogsFileProcessor {
         try {
             executorService = Executors.newFixedThreadPool(eventParameters.getNumberOfThreads());
             doProcessEventLogsFile(eventParameters.getFilePath());
-            Thread.sleep(2000);
+            sleepThread();
             executorService.shutdown();
         } catch (IOException e) {
-            logger.error("There was an error processing event logs file", e);
+            LOGGER.error("There was an error processing event logs file");
+            throw new ProcessingEventLogsFileException(e);
+        }
+    }
+
+    private void sleepThread() {
+        try {
+            // This is needed because it seems HSQLDB needs sometime to commit the changes to the
+            // file before the program finishes.
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.error("There was an error trying to sleep the main thread");
+            throw new SleepThreadException(e);
         }
     }
 
@@ -64,8 +76,8 @@ class EventLogsFileProcessor {
     }
 
     private void processEventLog(EventLog eventLog) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Processing new EventLog -> Event Id: {}, State: {}",
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Processing new EventLog -> Event Id: {}, State: {}",
                     eventLog.getId(),
                     eventLog.getState().name()
             );
@@ -84,7 +96,7 @@ class EventLogsFileProcessor {
 
     private void processEvent(EventLog lastEventLog) {
         CompletableFuture.runAsync(() -> {
-                    logger.debug("Processing Event -> id: {}", lastEventLog.getId());
+                    LOGGER.debug("Processing Event -> id: {}", lastEventLog.getId());
 
                     if (lastEventLog.getState().equals(EventLogState.STARTED)) {
                         eventProcessor.processEvent(
@@ -97,9 +109,9 @@ class EventLogsFileProcessor {
                     }
                     removeFirstEventLogPreviouslySaved(lastEventLog);
                 }
-        , executorService).exceptionally(exception -> {
-            logger.error("There was an error processing the Event: {}", lastEventLog.getId());
-            throw new ProcessingEventException(exception);
+        , executorService).exceptionally(e -> {
+            LOGGER.error("There was an error processing the Event: {}", lastEventLog.getId());
+            throw new ProcessingEventException(e);
         });
     }
 

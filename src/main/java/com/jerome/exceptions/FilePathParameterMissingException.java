@@ -2,7 +2,7 @@ package com.jerome.exceptions;
 
 public class FilePathParameterMissingException extends RuntimeException {
 
-    public FilePathParameterMissingException(Throwable cause) {
-        super("File path parameter is missing", cause);
+    public FilePathParameterMissingException(Exception e) {
+        super("File path parameter is missing", e);
     }
 }
