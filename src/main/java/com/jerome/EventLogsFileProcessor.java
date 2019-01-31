@@ -41,9 +41,12 @@ class EventLogsFileProcessor {
         try {
             executorService = Executors.newFixedThreadPool(eventParameters.getNumberOfThreads());
             doProcessEventLogsFile(eventParameters.getFilePath());
+            Thread.sleep(2000);
             executorService.shutdown();
         } catch (IOException e) {
             logger.error("There was an error processing event logs file", e);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
