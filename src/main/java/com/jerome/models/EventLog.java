@@ -62,4 +62,15 @@ public class EventLog {
     public String getHost() {
         return host;
     }
+
+    @Override
+    public String toString() {
+        return "EventLog{" +
+                "id='" + id + '\'' +
+                ", state=" + state +
+                ", timestamp=" + timestamp +
+                ", type=" + type +
+                ", host='" + host + '\'' +
+                '}';
+    }
 }

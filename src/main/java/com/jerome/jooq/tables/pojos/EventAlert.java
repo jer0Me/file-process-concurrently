@@ -83,16 +83,13 @@ public class EventAlert implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("EventAlert (");
-
-        sb.append(id);
-        sb.append(", ").append(eventId);
-        sb.append(", ").append(duration);
-        sb.append(", ").append(type);
-        sb.append(", ").append(host);
-        sb.append(", ").append(alert);
-
-        sb.append(")");
-        return sb.toString();
+        return "EventAlert{" +
+                "id=" + id +
+                ", eventId='" + eventId + '\'' +
+                ", duration=" + duration +
+                ", type='" + type + '\'' +
+                ", host='" + host + '\'' +
+                ", alert=" + alert +
+                '}';
     }
 }

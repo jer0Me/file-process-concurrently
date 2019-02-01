@@ -22,8 +22,9 @@ class EventProcessor {
 
     public void processEvent(Event event) {
         if (eventValidator.isEventDurationLongerThanFourSeconds(event)) {
-            eventAlertDao.saveEventAlert(buildEventAlert(event));
-            LOGGER.debug("Event: {} flagged as an Alert", event.getEventId());
+            EventAlert eventAlert = buildEventAlert(event);
+            eventAlertDao.saveEventAlert(eventAlert);
+            LOGGER.info("There is a new alert {}", eventAlert);
         }
     }
 

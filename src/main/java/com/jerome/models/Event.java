@@ -28,4 +28,12 @@ public class Event {
         }
         return "";
     }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "startedEventLog=" + startedEventLog +
+                ", finishedEventLog=" + finishedEventLog +
+                '}';
+    }
 }
