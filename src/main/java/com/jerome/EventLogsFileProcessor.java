@@ -32,14 +32,14 @@ class EventLogsFileProcessor {
     private ExecutorService executorService;
     private EventParameters eventParameters;
 
-    EventLogsFileProcessor(EventParameters eventParameters) {
+    public EventLogsFileProcessor(EventParameters eventParameters) {
         this.eventParameters = eventParameters;
         eventLogsMap = new HashMap<>();
         eventProcessor = new EventProcessor(new EventValidator(), new EventAlertDao());
         eventLogMapper = new EventLogMapper();
     }
 
-    void processEventLogsFile() {
+    public void processEventLogsFile() {
         try {
             executorService = Executors.newFixedThreadPool(eventParameters.getNumberOfThreads());
             doProcessEventLogsFile(eventParameters.getFilePath());

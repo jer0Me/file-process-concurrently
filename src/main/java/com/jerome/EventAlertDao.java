@@ -22,12 +22,12 @@ class EventAlertDao {
 
     private HikariDataSource hikariDatasource;
 
-    EventAlertDao() {
+    public EventAlertDao() {
         setupHikariConnectionPool();
         createEventAlertTableIfNotExist();
     }
 
-    void saveEventAlert(EventAlert eventAlert) {
+    public void saveEventAlert(EventAlert eventAlert) {
         try (Connection connection = hikariDatasource.getConnection()) {
             doSaveEventAlert(DSL.using(connection), eventAlert);
         } catch (SQLException e) {
