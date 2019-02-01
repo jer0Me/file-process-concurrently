@@ -1,11 +1,10 @@
 package com.jerome;
 
-import com.jerome.exceptions.ProcessingEventException;
+import com.jerome.enums.EventLogState;
 import com.jerome.exceptions.ProcessingEventLogsFileException;
 import com.jerome.exceptions.SleepThreadException;
 import com.jerome.models.Event;
 import com.jerome.models.EventLog;
-import com.jerome.enums.EventLogState;
 import com.jerome.models.EventParameters;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
@@ -22,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-class EventLogsFileProcessor {
+public class EventLogsFileProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogsFileProcessor.class);
 
