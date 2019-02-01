@@ -1,7 +1,7 @@
 package com.jerome;
 
+import com.jerome.jooq.tables.pojos.EventAlert;
 import com.jerome.models.Event;
-import com.jerome.models.EventAlert;
 import com.jerome.models.EventLog;
 import com.jerome.enums.EventLogState;
 import org.junit.Before;
@@ -52,7 +52,7 @@ public class EventProcessorTest {
         eventProcessor.processEvent(event);
         verify(eventAlertDao).saveEventAlert(eventAlertCaptor.capture());
 
-        assertEquals(eventName, eventAlertCaptor.getValue().getId());
+        assertEquals(eventName, eventAlertCaptor.getValue().getEventId());
         assertEquals(duration, eventAlertCaptor.getValue().getDuration(), 0);
         assertTrue(eventAlertCaptor.getValue().getAlert());
     }

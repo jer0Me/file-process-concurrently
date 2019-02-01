@@ -1,34 +1,42 @@
 package com.jerome;
 
+import com.jerome.jooq.tables.pojos.EventAlert;
 import com.jerome.models.Event;
-import com.jerome.models.EventAlert;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.UUID;
+
 class EventProcessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(EventProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventProcessor.class);
 
     private EventValidator eventValidator;
     private EventAlertDao eventAlertDao;
 
-    EventProcessor(EventValidator eventValidator, EventAlertDao eventAlertDao) {
+    public EventProcessor(EventValidator eventValidator, EventAlertDao eventAlertDao) {
         this.eventValidator = eventValidator;
         this.eventAlertDao = eventAlertDao;
     }
 
-    void processEvent(Event event) {
+    public void processEvent(Event event) {
         if (eventValidator.isEventDurationLongerThanFourSeconds(event)) {
-            eventAlertDao.saveEventAlert(
-                    new EventAlert(
-                            event.getStartedEventLog().getId(),
-                            event.getFinishedEventLog().getTimestamp() - event.getStartedEventLog().getTimestamp(),
-                            Boolean.TRUE,
-                            event.getFinishedEventLog().getType(),
-                            event.getFinishedEventLog().getHost()
-                    )
-            );
-            logger.debug("Event: {} flagged as an Alert", event.getEventId());
+            EventAlert eventAlert = buildEventAlert(event);
+            eventAlertDao.saveEventAlert(eventAlert);
+            LOGGER.info("There is a new alert {}", eventAlert);
         }
+    }
+
+    private EventAlert buildEventAlert(Event event) {
+        Long duration = (event.getFinishedEventLog().getTimestamp() - event.getStartedEventLog().getTimestamp());
+        return new EventAlert(
+                UUID.randomUUID(),
+                event.getStartedEventLog().getId(),
+                duration.intValue(),
+                event.getFinishedEventLog().getType().name(),
+                event.getFinishedEventLog().getHost(),
+                Boolean.TRUE
+        );
     }
 }

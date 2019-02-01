@@ -10,21 +10,21 @@ import java.util.Optional;
 
 class EventLogMapper {
 
-    private static final Logger logger = LoggerFactory.getLogger(EventLogMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventLogMapper.class);
 
     private ObjectMapper objectMapper;
 
-    EventLogMapper() {
+    public EventLogMapper() {
         this.objectMapper = new ObjectMapper();
     }
 
-    Optional<EventLog> mapEventLogLineToEventLogObject(String eventLogLine) {
+    public Optional<EventLog> mapEventLogLineToEventLogObject(String eventLogLine) {
         try {
             return Optional.of(
                     objectMapper.readValue(eventLogLine, EventLog.class)
             );
         } catch (IOException e) {
-            logger.error("There was an error mapping the event log line: {}", eventLogLine, e);
+            LOGGER.error("There was an error mapping the event log line: {}", eventLogLine, e);
             return Optional.empty();
         }
     }

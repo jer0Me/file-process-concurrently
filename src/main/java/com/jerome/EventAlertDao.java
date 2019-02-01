@@ -1,7 +1,7 @@
 package com.jerome;
 
 import com.jerome.exceptions.DatabaseException;
-import com.jerome.models.EventAlert;
+import com.jerome.jooq.tables.pojos.EventAlert;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jooq.DSLContext;
@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.UUID;
 
 import static com.jerome.jooq.tables.EventAlert.EVENT_ALERT;
 
@@ -23,12 +22,12 @@ class EventAlertDao {
 
     private HikariDataSource hikariDatasource;
 
-    EventAlertDao() {
+    public EventAlertDao() {
         setupHikariConnectionPool();
         createEventAlertTableIfNotExist();
     }
 
-    void saveEventAlert(EventAlert eventAlert) {
+    public void saveEventAlert(EventAlert eventAlert) {
         try (Connection connection = hikariDatasource.getConnection()) {
             doSaveEventAlert(DSL.using(connection), eventAlert);
         } catch (SQLException e) {
@@ -39,12 +38,7 @@ class EventAlertDao {
 
     private void doSaveEventAlert(DSLContext dslContext, EventAlert eventAlert) {
         dslContext.insertInto(EVENT_ALERT)
-                .set(EVENT_ALERT.ID, UUID.randomUUID())
-                .set(EVENT_ALERT.EVENT_ID, eventAlert.getId())
-                .set(EVENT_ALERT.DURATION, eventAlert.getDuration().intValue())
-                .set(EVENT_ALERT.TYPE, eventAlert.getType().name())
-                .set(EVENT_ALERT.HOST, eventAlert.getHost())
-                .set(EVENT_ALERT.ALERT, eventAlert.getAlert())
+                .set(dslContext.newRecord(EVENT_ALERT, eventAlert))
                 .execute();
     }
 

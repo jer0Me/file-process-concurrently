@@ -1,11 +1,10 @@
 package com.jerome;
 
-import com.jerome.exceptions.ProcessingEventException;
+import com.jerome.enums.EventLogState;
 import com.jerome.exceptions.ProcessingEventLogsFileException;
 import com.jerome.exceptions.SleepThreadException;
 import com.jerome.models.Event;
 import com.jerome.models.EventLog;
-import com.jerome.enums.EventLogState;
 import com.jerome.models.EventParameters;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
@@ -22,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-class EventLogsFileProcessor {
+public class EventLogsFileProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogsFileProcessor.class);
 
@@ -32,14 +31,14 @@ class EventLogsFileProcessor {
     private ExecutorService executorService;
     private EventParameters eventParameters;
 
-    EventLogsFileProcessor(EventParameters eventParameters) {
+    public EventLogsFileProcessor(EventParameters eventParameters) {
         this.eventParameters = eventParameters;
         eventLogsMap = new HashMap<>();
         eventProcessor = new EventProcessor(new EventValidator(), new EventAlertDao());
         eventLogMapper = new EventLogMapper();
     }
 
-    void processEventLogsFile() {
+    public void processEventLogsFile() {
         try {
             executorService = Executors.newFixedThreadPool(eventParameters.getNumberOfThreads());
             doProcessEventLogsFile(eventParameters.getFilePath());
@@ -77,10 +76,7 @@ class EventLogsFileProcessor {
 
     private void processEventLog(EventLog eventLog) {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Processing new EventLog -> Event Id: {}, State: {}",
-                    eventLog.getId(),
-                    eventLog.getState().name()
-            );
+            LOGGER.debug("Processing new {}", eventLog);
         }
 
         if (hasFirstLogForThisEventAlreadyArrived(eventLog.getId())) {
@@ -96,23 +92,27 @@ class EventLogsFileProcessor {
 
     private void processEvent(EventLog lastEventLog) {
         CompletableFuture.runAsync(() -> {
-                    LOGGER.debug("Processing Event -> id: {}", lastEventLog.getId());
+            Event event = buildEvent(lastEventLog);
 
-                    if (lastEventLog.getState().equals(EventLogState.STARTED)) {
-                        eventProcessor.processEvent(
-                                new Event(lastEventLog, eventLogsMap.get(lastEventLog.getId()))
-                        );
-                    } else {
-                        eventProcessor.processEvent(
-                                new Event(eventLogsMap.get(lastEventLog.getId()), lastEventLog)
-                        );
-                    }
-                    removeFirstEventLogPreviouslySaved(lastEventLog);
-                }
-        , executorService).exceptionally(e -> {
-            LOGGER.error("There was an error processing the Event: {}", lastEventLog.getId());
-            throw new ProcessingEventException(e);
-        });
+            LOGGER.debug("Processing {}", event);
+
+            eventProcessor.processEvent(event);
+
+            removeFirstEventLogPreviouslySaved(lastEventLog);
+
+        }, executorService);
+    }
+
+    private Event buildEvent(EventLog lastEventLog) {
+        Event event;
+
+        if (lastEventLog.getState().equals(EventLogState.STARTED)) {
+            event = new Event(lastEventLog, eventLogsMap.get(lastEventLog.getId()));
+        } else {
+            event = new Event(eventLogsMap.get(lastEventLog.getId()), lastEventLog);
+        }
+
+        return event;
     }
 
     private void removeFirstEventLogPreviouslySaved(EventLog lastEventLog) {
