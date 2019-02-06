@@ -52,7 +52,7 @@ public class EventLogsFileProcessor {
 
     private void sleepThread() {
         try {
-            // This is needed because it seems HSQLDB needs sometime to commit the changes to the
+            // This is needed because it seems HSQLDB needs some time to commit the changes to the
             // file before the program finishes.
             Thread.sleep(2000);
         } catch (InterruptedException e) {
