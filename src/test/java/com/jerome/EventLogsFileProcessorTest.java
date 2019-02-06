@@ -22,6 +22,7 @@ public class EventLogsFileProcessorTest {
     private EventProcessor mockEventProcessor;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         mockEventLogsMap = mock(HashMap.class);
         mockEventProcessor = mock(EventProcessor.class);
