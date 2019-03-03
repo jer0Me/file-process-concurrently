@@ -3,7 +3,6 @@ package com.jerome;
 import com.jerome.jooq.tables.pojos.EventAlert;
 import com.jerome.models.Event;
 import com.jerome.models.EventLog;
-import com.jerome.enums.EventLogState;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,8 +43,8 @@ public class EventProcessorTest {
         long duration = finishEvent - startEvent;
 
         Event event = new Event(
-                new EventLog(eventName, EventLogState.STARTED, startEvent),
-                new EventLog(eventName, EventLogState.FINISHED, finishEvent)
+                new EventLog(eventName, EventLog.State.STARTED, startEvent),
+                new EventLog(eventName, EventLog.State.FINISHED, finishEvent)
         );
 
         when(eventValidator.isEventDurationLongerThanFourSeconds(event)).thenReturn(Boolean.TRUE);

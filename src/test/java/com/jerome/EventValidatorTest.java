@@ -2,7 +2,6 @@ package com.jerome;
 
 import com.jerome.models.Event;
 import com.jerome.models.EventLog;
-import com.jerome.enums.EventLogState;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -16,8 +15,8 @@ public class EventValidatorTest {
         assertTrue(
                 new EventValidator().isEventDurationLongerThanFourSeconds(
                         new Event(
-                                new EventLog(eventId, EventLogState.STARTED, 1491377495210L),
-                                new EventLog(eventId, EventLogState.FINISHED, 1491377495218L)
+                                new EventLog(eventId, EventLog.State.STARTED, 1491377495210L),
+                                new EventLog(eventId, EventLog.State.FINISHED, 1491377495218L)
                         )
                 )
         );
@@ -29,8 +28,8 @@ public class EventValidatorTest {
         assertFalse(
                 new EventValidator().isEventDurationLongerThanFourSeconds(
                         new Event(
-                                new EventLog(eventId, EventLogState.STARTED, 1491377495213L),
-                                new EventLog(eventId, EventLogState.FINISHED, 1491377495216L)
+                                new EventLog(eventId, EventLog.State.STARTED, 1491377495213L),
+                                new EventLog(eventId, EventLog.State.FINISHED, 1491377495216L)
                         )
                 )
         );
@@ -42,8 +41,8 @@ public class EventValidatorTest {
         assertFalse(
                 new EventValidator().isEventDurationLongerThanFourSeconds(
                         new Event(
-                                new EventLog(eventId, EventLogState.STARTED, 1491377495213L),
-                                new EventLog(eventId, EventLogState.FINISHED, 1491377495217L)
+                                new EventLog(eventId, EventLog.State.STARTED, 1491377495213L),
+                                new EventLog(eventId, EventLog.State.FINISHED, 1491377495217L)
                         )
                 )
         );

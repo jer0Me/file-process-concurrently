@@ -1,6 +1,5 @@
 package com.jerome;
 
-import com.jerome.enums.EventLogState;
 import com.jerome.exceptions.ProcessingEventLogsFileException;
 import com.jerome.exceptions.SleepThreadException;
 import com.jerome.models.Event;
@@ -106,7 +105,7 @@ public class EventLogsFileProcessor {
     private Event buildEvent(EventLog lastEventLog) {
         Event event;
 
-        if (lastEventLog.getState().equals(EventLogState.STARTED)) {
+        if (lastEventLog.getState().equals(EventLog.State.STARTED)) {
             event = new Event(lastEventLog, eventLogsMap.get(lastEventLog.getId()));
         } else {
             event = new Event(eventLogsMap.get(lastEventLog.getId()), lastEventLog);
