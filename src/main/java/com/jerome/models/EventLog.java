@@ -18,7 +18,7 @@ public class EventLog {
 
     private final String id;
     private final State state;
-    private final Long timestamp;
+    private final long timestamp;
 
     @JsonIgnoreProperties
     private final Type type;
@@ -29,7 +29,7 @@ public class EventLog {
     @JsonCreator
     public EventLog(@JsonProperty("id") String id,
                     @JsonProperty("state") State state,
-                    @JsonProperty("timestamp") Long timestamp,
+                    @JsonProperty("timestamp") long timestamp,
                     @JsonProperty("type") Type type,
                     @JsonProperty("host") String host) {
 
@@ -59,7 +59,7 @@ public class EventLog {
         return state;
     }
 
-    public Long getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 

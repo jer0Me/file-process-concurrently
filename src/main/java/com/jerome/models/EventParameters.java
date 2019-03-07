@@ -3,9 +3,9 @@ package com.jerome.models;
 public class EventParameters {
 
     private final String filePath;
-    private final Integer numberOfThreads;
+    private final int numberOfThreads;
 
-    public EventParameters(String filePath, Integer numberOfThreads) {
+    public EventParameters(String filePath, int numberOfThreads) {
         this.filePath = filePath;
         this.numberOfThreads = numberOfThreads;
     }
@@ -14,7 +14,7 @@ public class EventParameters {
         return filePath;
     }
 
-    public Integer getNumberOfThreads() {
+    public int getNumberOfThreads() {
         return numberOfThreads;
     }
 }

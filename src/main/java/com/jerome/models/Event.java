@@ -18,17 +18,6 @@ public class Event {
         return finishedEventLog;
     }
 
-    public String getEventId() {
-        if (startedEventLog != null) {
-            return startedEventLog.getId();
-        }
-
-        if (finishedEventLog != null) {
-            return finishedEventLog.getId();
-        }
-        return "";
-    }
-
     @Override
     public String toString() {
         return "Event{" +

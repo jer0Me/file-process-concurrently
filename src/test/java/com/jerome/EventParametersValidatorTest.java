@@ -11,7 +11,7 @@ public class EventParametersValidatorTest {
     public void shouldUseThreadPoolSizePassedAsParameter() {
         String[] vars = {"file", "2"};
         EventParametersValidator eventParametersValidator = new EventParametersValidator(vars);
-        assertEquals(Integer.valueOf(2), eventParametersValidator.getEventParameters().getNumberOfThreads());
+        assertEquals(2, eventParametersValidator.getEventParameters().getNumberOfThreads());
     }
 
     @Test

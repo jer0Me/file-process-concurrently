@@ -62,7 +62,7 @@ public class EventAlertDaoTest {
 
     @Test
     public void shouldCreateEventsTableIfNotExistWhenEventDaoIsCreated() throws SQLException {
-        Integer exists = DSL.using(hikariDatasource.getConnection())
+        int exists = DSL.using(hikariDatasource.getConnection())
                 .select(count())
                 .from("information_schema.tables")
                 .where("table_name = 'EVENT_ALERT'")
@@ -89,7 +89,7 @@ public class EventAlertDaoTest {
         assertTrue(bothEventAlertsAreEqual(eventAlert, eventAlertRetrieved));
     }
 
-    private Boolean bothEventAlertsAreEqual(EventAlert eventAlert, EventAlert eventAlertRetrieved) {
+    private boolean bothEventAlertsAreEqual(EventAlert eventAlert, EventAlert eventAlertRetrieved) {
         return eventAlert.getId().equals(eventAlertRetrieved.getId())
                 && eventAlert.getEventId().equals(eventAlertRetrieved.getEventId())
                 && eventAlert.getDuration().equals(eventAlertRetrieved.getDuration())
