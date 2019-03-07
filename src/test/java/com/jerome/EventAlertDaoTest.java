@@ -1,7 +1,7 @@
 package com.jerome;
 
-import com.jerome.enums.EventType;
 import com.jerome.jooq.tables.pojos.EventAlert;
+import com.jerome.models.EventLog;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.io.FileUtils;
@@ -77,7 +77,7 @@ public class EventAlertDaoTest {
                 UUID.randomUUID(),
                 "This_event_is_an_alert",
                 5,
-                EventType.APPLICATION_LOG.name(),
+                EventLog.Type.APPLICATION_LOG.name(),
                 "myhost",
                 false
         );

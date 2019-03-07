@@ -3,7 +3,6 @@ package com.jerome.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.jerome.enums.EventType;
 
 public class EventLog {
 
@@ -12,12 +11,17 @@ public class EventLog {
         FINISHED
     }
 
+    public enum Type {
+        APPLICATION_LOG,
+        UNKNOWN
+    }
+
     private final String id;
     private final State state;
     private final Long timestamp;
 
     @JsonIgnoreProperties
-    private final EventType type;
+    private final Type type;
 
     @JsonIgnoreProperties
     private final String host;
@@ -26,7 +30,7 @@ public class EventLog {
     public EventLog(@JsonProperty("id") String id,
                     @JsonProperty("state") State state,
                     @JsonProperty("timestamp") Long timestamp,
-                    @JsonProperty("type") EventType type,
+                    @JsonProperty("type") Type type,
                     @JsonProperty("host") String host) {
 
         this.id = id;
@@ -43,7 +47,7 @@ public class EventLog {
         this.id = id;
         this.state = state;
         this.timestamp = timestamp;
-        this.type = EventType.UNKNOWN;
+        this.type = Type.UNKNOWN;
         this.host = "";
     }
 
@@ -59,7 +63,7 @@ public class EventLog {
         return timestamp;
     }
 
-    public EventType getType() {
+    public Type getType() {
         return type;
     }
 
