@@ -2,15 +2,12 @@ package com.jerome;
 
 import com.jerome.jooq.tables.pojos.EventAlert;
 import com.jerome.models.Event;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
 
+@Slf4j
 class EventProcessor {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventProcessor.class);
 
     private EventValidator eventValidator;
     private EventAlertDao eventAlertDao;
@@ -24,7 +21,7 @@ class EventProcessor {
         if (eventValidator.isEventDurationLongerThanFourSeconds(event)) {
             EventAlert eventAlert = buildEventAlert(event);
             eventAlertDao.saveEventAlert(eventAlert);
-            LOGGER.info("There is a new alert {}", eventAlert);
+            log.info("There is a new alert {}", eventAlert);
         }
     }
 

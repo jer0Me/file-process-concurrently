@@ -2,15 +2,13 @@ package com.jerome;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jerome.models.EventLog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Optional;
 
+@Slf4j
 class EventLogMapper {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventLogMapper.class);
 
     private ObjectMapper objectMapper;
 
@@ -24,7 +22,7 @@ class EventLogMapper {
                     objectMapper.readValue(eventLogLine, EventLog.class)
             );
         } catch (IOException e) {
-            LOGGER.error("There was an error mapping the event log line: {}", eventLogLine, e);
+            log.error("There was an error mapping the event log line: {}", eventLogLine, e);
             return Optional.empty();
         }
     }

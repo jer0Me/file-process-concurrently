@@ -42,7 +42,7 @@ public class EventProcessorTest {
         long finishEvent = 1491377495218L;
         long duration = finishEvent - startEvent;
 
-        Event event = new Event(
+        Event event = Event.newInstance(
                 new EventLog(eventName, EventLog.State.STARTED, startEvent),
                 new EventLog(eventName, EventLog.State.FINISHED, finishEvent)
         );
@@ -58,7 +58,7 @@ public class EventProcessorTest {
 
     @Test
     public void shouldNotSaveAnEventIfItsNotAnAlert() {
-        Event event = new Event(null, null);
+        Event event = Event.newInstance(null, null);
         when(eventValidator.isEventDurationLongerThanFourSeconds(event)).thenReturn(Boolean.FALSE);
         verify(eventAlertDao, never()).saveEventAlert(any());
         eventProcessor.processEvent(event);

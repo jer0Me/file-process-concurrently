@@ -3,7 +3,9 @@ package com.jerome.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Value;
 
+@Value
 public class EventLog {
 
     public enum State {
@@ -51,35 +53,5 @@ public class EventLog {
         this.host = "";
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    @Override
-    public String toString() {
-        return "EventLog{" +
-                "id='" + id + '\'' +
-                ", state=" + state +
-                ", timestamp=" + timestamp +
-                ", type=" + type +
-                ", host='" + host + '\'' +
-                '}';
-    }
 
 }

@@ -14,7 +14,7 @@ public class EventValidatorTest {
         String eventId = "scsmbstgrc";
         assertTrue(
                 new EventValidator().isEventDurationLongerThanFourSeconds(
-                        new Event(
+                        Event.newInstance(
                                 new EventLog(eventId, EventLog.State.STARTED, 1491377495210L),
                                 new EventLog(eventId, EventLog.State.FINISHED, 1491377495218L)
                         )
@@ -27,7 +27,7 @@ public class EventValidatorTest {
         String eventId = "scsmbstgrb";
         assertFalse(
                 new EventValidator().isEventDurationLongerThanFourSeconds(
-                        new Event(
+                        Event.newInstance(
                                 new EventLog(eventId, EventLog.State.STARTED, 1491377495213L),
                                 new EventLog(eventId, EventLog.State.FINISHED, 1491377495216L)
                         )
@@ -40,7 +40,7 @@ public class EventValidatorTest {
         String eventId = "scsmbstgrb";
         assertFalse(
                 new EventValidator().isEventDurationLongerThanFourSeconds(
-                        new Event(
+                        Event.newInstance(
                                 new EventLog(eventId, EventLog.State.STARTED, 1491377495213L),
                                 new EventLog(eventId, EventLog.State.FINISHED, 1491377495217L)
                         )

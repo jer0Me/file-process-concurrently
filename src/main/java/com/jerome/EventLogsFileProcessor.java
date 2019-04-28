@@ -5,10 +5,9 @@ import com.jerome.exceptions.SleepThreadException;
 import com.jerome.models.Event;
 import com.jerome.models.EventLog;
 import com.jerome.models.EventParameters;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +19,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Slf4j
 public class EventLogsFileProcessor {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventLogsFileProcessor.class);
 
     private EventProcessor eventProcessor;
     private EventLogMapper eventLogMapper;
@@ -44,7 +42,7 @@ public class EventLogsFileProcessor {
             sleepThread();
             executorService.shutdown();
         } catch (IOException e) {
-            LOGGER.error("There was an error processing event logs file");
+            log.error("There was an error processing event logs file");
             throw new ProcessingEventLogsFileException(e);
         }
     }
@@ -55,7 +53,7 @@ public class EventLogsFileProcessor {
             // file before the program finishes.
             Thread.sleep(2000);
         } catch (InterruptedException e) {
-            LOGGER.error("There was an error trying to sleep the main thread");
+            log.error("There was an error trying to sleep the main thread");
             throw new SleepThreadException(e);
         }
     }
@@ -74,8 +72,8 @@ public class EventLogsFileProcessor {
     }
 
     private void processEventLog(EventLog eventLog) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Processing new {}", eventLog);
+        if (log.isDebugEnabled()) {
+            log.debug("Processing new {}", eventLog);
         }
 
         if (hasFirstLogForThisEventAlreadyArrived(eventLog.getId())) {
@@ -93,7 +91,7 @@ public class EventLogsFileProcessor {
         CompletableFuture.runAsync(() -> {
             Event event = buildEvent(lastEventLog);
 
-            LOGGER.debug("Processing {}", event);
+            log.debug("Processing {}", event);
 
             eventProcessor.processEvent(event);
 
@@ -106,9 +104,9 @@ public class EventLogsFileProcessor {
         Event event;
 
         if (lastEventLog.getState().equals(EventLog.State.STARTED)) {
-            event = new Event(lastEventLog, eventLogsMap.get(lastEventLog.getId()));
+            event = Event.newInstance(lastEventLog, eventLogsMap.get(lastEventLog.getId()));
         } else {
-            event = new Event(eventLogsMap.get(lastEventLog.getId()), lastEventLog);
+            event = Event.newInstance(eventLogsMap.get(lastEventLog.getId()), lastEventLog);
         }
 
         return event;

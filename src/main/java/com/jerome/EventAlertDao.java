@@ -4,20 +4,18 @@ import com.jerome.exceptions.DatabaseException;
 import com.jerome.jooq.tables.pojos.EventAlert;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import static com.jerome.jooq.tables.EventAlert.EVENT_ALERT;
 
+@Slf4j
 class EventAlertDao {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventAlertDao.class);
     private static final String DATABASE_NAME = "eventsDB";
 
     private HikariDataSource hikariDatasource;
@@ -31,7 +29,7 @@ class EventAlertDao {
         try (Connection connection = hikariDatasource.getConnection()) {
             doSaveEventAlert(DSL.using(connection), eventAlert);
         } catch (SQLException e) {
-            LOGGER.error("There was an error trying to save an EventAlert", e);
+            log.error("There was an error trying to save an EventAlert", e);
             throw new DatabaseException(e);
         }
     }
@@ -59,7 +57,7 @@ class EventAlertDao {
         try (Connection connection = hikariDatasource.getConnection()) {
             doCreateEventsTableIfNotExist(DSL.using(connection));
         } catch (SQLException e) {
-            LOGGER.error("There was an error trying to create the Events table", e);
+            log.error("There was an error trying to create the Events table", e);
             throw new DatabaseException(e);
         }
     }

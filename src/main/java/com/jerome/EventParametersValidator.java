@@ -2,12 +2,10 @@ package com.jerome;
 
 import com.jerome.exceptions.FilePathParameterMissingException;
 import com.jerome.models.EventParameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 class EventParametersValidator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(EventParametersValidator.class);
 
     public static final int DEFAULT_THREAD_POOL_SIZE = 1;
 
@@ -21,14 +19,14 @@ class EventParametersValidator {
     }
 
     public EventParameters getEventParameters() {
-        return new EventParameters(getFilePath(), getNumberOfThreadsParameter());
+        return EventParameters.newInstance(getFilePath(), getNumberOfThreadsParameter());
     }
 
     private String getFilePath() {
         try {
             return vars[FILE_PATH_PARAMETER_INDEX];
         } catch (ArrayIndexOutOfBoundsException e) {
-            LOGGER.error("File path parameter is missing");
+            log.error("File path parameter is missing");
             throw new FilePathParameterMissingException(e);
         }
     }
@@ -37,11 +35,11 @@ class EventParametersValidator {
         try {
             return Integer.valueOf(vars[NUMBER_OF_THREADS_PARAMETER_INDEX]);
         } catch (NumberFormatException e) {
-            LOGGER.info("{} should be a number", vars[NUMBER_OF_THREADS_PARAMETER_INDEX]);
-            LOGGER.info("Using Default thread pool size: {}", DEFAULT_THREAD_POOL_SIZE);
+            log.info("{} should be a number", vars[NUMBER_OF_THREADS_PARAMETER_INDEX]);
+            log.info("Using Default thread pool size: {}", DEFAULT_THREAD_POOL_SIZE);
             return DEFAULT_THREAD_POOL_SIZE;
         } catch (ArrayIndexOutOfBoundsException e) {
-            LOGGER.info("Default thread pool size: {}", DEFAULT_THREAD_POOL_SIZE);
+            log.info("Default thread pool size: {}", DEFAULT_THREAD_POOL_SIZE);
             return DEFAULT_THREAD_POOL_SIZE;
         }
     }

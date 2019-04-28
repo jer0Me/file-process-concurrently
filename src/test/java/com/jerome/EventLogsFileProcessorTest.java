@@ -64,7 +64,7 @@ public class EventLogsFileProcessorTest {
     }
 
     private EventParameters buildEventParameters(String s) {
-        return new EventParameters(
+        return EventParameters.newInstance(
                 ClassLoader.getSystemClassLoader().getResource(s).getPath(),
                 1
         );
