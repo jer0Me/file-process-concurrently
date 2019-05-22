@@ -9,16 +9,14 @@ import java.util.UUID;
 @Slf4j
 class EventProcessor {
 
-    private EventValidator eventValidator;
     private EventAlertDao eventAlertDao;
 
-    public EventProcessor(EventValidator eventValidator, EventAlertDao eventAlertDao) {
-        this.eventValidator = eventValidator;
+    EventProcessor(EventAlertDao eventAlertDao) {
         this.eventAlertDao = eventAlertDao;
     }
 
-    public void processEvent(Event event) {
-        if (eventValidator.isEventDurationLongerThanFourSeconds(event)) {
+    void processEvent(Event event) {
+        if (!event.isValid()) {
             EventAlert eventAlert = buildEventAlert(event);
             eventAlertDao.saveEventAlert(eventAlert);
             log.info("There is a new alert {}", eventAlert);
@@ -26,11 +24,10 @@ class EventProcessor {
     }
 
     private EventAlert buildEventAlert(Event event) {
-        Long duration = (event.getFinishedEventLog().getTimestamp() - event.getStartedEventLog().getTimestamp());
         return new EventAlert(
                 UUID.randomUUID(),
                 event.getStartedEventLog().getId(),
-                duration.intValue(),
+                event.getDuration().intValue(),
                 event.getFinishedEventLog().getType().name(),
                 event.getFinishedEventLog().getHost(),
                 Boolean.TRUE

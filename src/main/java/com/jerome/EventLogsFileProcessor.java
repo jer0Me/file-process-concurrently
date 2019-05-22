@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Slf4j
-public class EventLogsFileProcessor {
+class EventLogsFileProcessor {
 
     private EventProcessor eventProcessor;
     private EventLogMapper eventLogMapper;
@@ -28,14 +28,14 @@ public class EventLogsFileProcessor {
     private ExecutorService executorService;
     private EventParameters eventParameters;
 
-    public EventLogsFileProcessor(EventParameters eventParameters) {
+    EventLogsFileProcessor(EventParameters eventParameters) {
         this.eventParameters = eventParameters;
         eventLogsMap = new HashMap<>();
-        eventProcessor = new EventProcessor(new EventValidator(), new EventAlertDao());
+        eventProcessor = new EventProcessor(new EventAlertDao());
         eventLogMapper = new EventLogMapper();
     }
 
-    public void processEventLogsFile() {
+    void processEventLogsFile() {
         try {
             executorService = Executors.newFixedThreadPool(eventParameters.getNumberOfThreads());
             doProcessEventLogsFile(eventParameters.getFilePath());

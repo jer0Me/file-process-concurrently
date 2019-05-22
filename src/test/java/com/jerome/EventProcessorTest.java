@@ -22,7 +22,6 @@ import static org.mockito.Mockito.any;
 public class EventProcessorTest {
 
     private EventAlertDao eventAlertDao;
-    private EventValidator eventValidator;
     private EventProcessor eventProcessor;
 
     @Captor
@@ -31,36 +30,31 @@ public class EventProcessorTest {
     @Before
     public void setUp() {
         eventAlertDao = mock(EventAlertDao.class);
-        eventValidator = mock(EventValidator.class);
-        eventProcessor = new EventProcessor(eventValidator, eventAlertDao);
+        eventProcessor = new EventProcessor(eventAlertDao);
     }
 
     @Test
     public void shouldSaveEventToTheDatabaseIfTheEventIsAnAlert() {
         String eventName = "scsmbstgrc";
-        long startEvent = 1491377495210L;
-        long finishEvent = 1491377495218L;
-        long duration = finishEvent - startEvent;
-
         Event event = Event.newInstance(
-                new EventLog(eventName, EventLog.State.STARTED, startEvent),
-                new EventLog(eventName, EventLog.State.FINISHED, finishEvent)
+                new EventLog(eventName, EventLog.State.STARTED, 1491377495210L),
+                new EventLog(eventName, EventLog.State.FINISHED, 1491377495218L)
         );
 
-        when(eventValidator.isEventDurationLongerThanFourSeconds(event)).thenReturn(Boolean.TRUE);
         eventProcessor.processEvent(event);
         verify(eventAlertDao).saveEventAlert(eventAlertCaptor.capture());
 
         assertEquals(eventName, eventAlertCaptor.getValue().getEventId());
-        assertEquals(duration, eventAlertCaptor.getValue().getDuration(), 0);
         assertTrue(eventAlertCaptor.getValue().getAlert());
     }
 
     @Test
     public void shouldNotSaveAnEventIfItsNotAnAlert() {
-        Event event = Event.newInstance(null, null);
-        when(eventValidator.isEventDurationLongerThanFourSeconds(event)).thenReturn(Boolean.FALSE);
-        verify(eventAlertDao, never()).saveEventAlert(any());
+        String eventName = "scsmbstgrc";
+        Event event = Event.newInstance(
+                new EventLog(eventName, EventLog.State.STARTED, 1491377495210L),
+                new EventLog(eventName, EventLog.State.FINISHED, 1491377495214L)
+        );        verify(eventAlertDao, never()).saveEventAlert(any());
         eventProcessor.processEvent(event);
     }
 }
