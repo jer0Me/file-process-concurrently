@@ -1,5 +1,7 @@
 # file-process-concurrently
 
+## Scala version (https://github.com/jer0Me/file-process-concurrently-scala)
+
 Simple java application to process a log file concurrently.
 
 The file should have the following format:
